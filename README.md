@@ -10,9 +10,11 @@ from google.colab import drive
 drive.mount('/content/drive')
 ```
 ### Load Dataset:
-```import os
+```python
+import os
 dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
 if os.path.exists(dataset_path):
     print("Dataset path exists.")
 else:
     print("Dataset path NOT found. Check the path.")
+```
