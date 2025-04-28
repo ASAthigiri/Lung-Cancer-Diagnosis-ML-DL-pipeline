@@ -100,9 +100,90 @@ print("Dataset Loaded and Saved Successfully!")
 
 ---
 
-🔵 **Explanation:**
-- First code block = your Python code (`python`)
-- Then write a heading like "Output:"
-- Second code block = your result/output (`bash` or no language)
+🔵 **Result:**
+- Dataset Loaded and Saved Successfully!
 
 ---
+
+# Preprocessing: Contrast Enhancement and Data Augmentation
+
+```python
+import os
+import numpy as np
+import cv2
+import glob
+import concurrent.futures
+from skimage.exposure import equalize_hist
+from skimage.util import random_noise
+from skimage.transform import rotate
+from skimage import img_as_ubyte
+
+def enhance_contrast(image):
+    """Apply histogram equalization for contrast enhancement."""
+    img_yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
+    img_yuv[:, :, 0] = cv2.equalizeHist(img_yuv[:, :, 0])
+    return cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
+
+def augment_image(image):
+    """Apply data augmentation: rotation, flipping, brightness adjustment."""
+    augmented_images = []
+
+    # Rotate images by 90, 180, 270 degrees
+    for angle in [90, 180, 270]:
+        augmented_images.append(rotate(image, angle, mode='wrap'))
+
+    # Flip images horizontally and vertically
+    augmented_images.append(np.fliplr(image))
+    augmented_images.append(np.flipud(image))
+
+    # Adjust brightness
+    brightness_factor = 1.5  # Increase brightness
+    bright_image = np.clip(image * brightness_factor, 0, 255).astype(np.uint8)
+    augmented_images.append(bright_image)
+
+    return [img_as_ubyte(img) for img in augmented_images]
+
+def process_image(image):
+    """Enhance contrast and apply augmentation."""
+    enhanced_image = enhance_contrast(image)
+    augmented_images = augment_image(enhanced_image)
+    return [enhanced_image] + augmented_images
+
+def main():
+    save_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data"
+    os.makedirs(save_path, exist_ok=True)
+
+    # Load saved dataset
+    data = np.load(os.path.join(save_path, "lung_cancer_data.npy"))
+    labels = np.load(os.path.join(save_path, "lung_cancer_labels.npy"))
+
+    processed_data = []
+    processed_labels = []
+
+    # Get image shape from the first image
+    img_shape = data.shape[1:3]
+
+    for img, label in zip(data, labels):
+        img = (img * 255).astype(np.uint8)  # Convert back to 8-bit image
+        processed_images = process_image(img)
+        processed_data.extend(processed_images)
+        processed_labels.extend([label] * len(processed_images))
+
+    # Convert to NumPy arrays and save
+    processed_data = np.array(processed_data, dtype=np.float32).reshape(-1, img_shape[0], img_shape[1], 1) / 255.0
+    processed_labels = np.array(processed_labels, dtype=np.int32)
+
+    np.save(os.path.join(save_path, "enhanced_lung_cancer_data.npy"), processed_data)
+    np.save(os.path.join(save_path, "enhanced_lung_cancer_labels.npy"), processed_labels)
+
+    print("Contrast Enhancement and Data Augmentation Completed Successfully!")
+
+if __name__ == "__main__":
+    main()
+```
+
+
+
+
+
+
