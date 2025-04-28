@@ -97,14 +97,6 @@ np.save(os.path.join(save_path, "lung_cancer_labels.npy"), labels)
 print("Dataset Loaded and Saved Successfully!")
 ```
 
-
----
-
-🔵 **Result:**
-- Dataset Loaded and Saved Successfully!
-
----
-
 ## Preprocessing: Contrast Enhancement and Data Augmentation
 
 ```python
@@ -182,13 +174,6 @@ if __name__ == "__main__":
     main()
 ```
 
----
-
-🔵 **Result:**
-- Contrast Enhancement and Data Augmentation Completed Successfully!
-
----
-
 ## Count the files in each category
 ```python
 import os
@@ -210,18 +195,6 @@ malignant_images = check_images("Malignant cases")
 normal_images = check_images("Normal cases")
 ```
 
----
-
-🔵 **Result:**
-- Found 120 files in Bengin cases
-Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
-- Found 561 files in Malignant cases
-Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
-- Found 416 files in Normal cases
-Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
-
----
-
 ```python
 import glob
 
@@ -231,12 +204,6 @@ for ext in ["*.png", "*.jpg", "*.jpeg", "*.bmp"]:
 
 print(f"🖼️ Found {len(image_files)} images.")
 ```
----
-
-🔵 **Result:**
-- Found 1097 images.
-
----
 
 ## Feature Extraction using EfficientNet-B7
 ```python
@@ -312,32 +279,541 @@ np.save("/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_labels
 np.save("/content/drive/MyDrive/Processed_Lung_Cancer_Data/lung_cancer_labels.npy", labels)
 ```
 
----
+```python
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 
-🔵 **Result:**
-- Processing 120 images from Bengin cases...
-  0%|          | 0/120 [00:00<?, ?it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 14s 14s/step
-  1%|          | 1/120 [00:20<40:42, 20.53s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 114ms/step
-  2%|▏         | 2/120 [00:20<17:00,  8.65s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 116ms/step
-  2%|▎         | 3/120 [00:21<09:20,  4.79s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 111ms/step
-  3%|▎         | 4/120 [00:21<05:45,  2.98s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 113ms/step
-  4%|▍         | 5/120 [00:21<03:45,  1.96s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 111ms/step
-  5%|▌         | 6/120 [00:21<02:33,  1.35s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 106ms/step
-  6%|▌         | 7/120 [00:21<01:49,  1.03it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
-  7%|▋         | 8/120 [00:21<01:19,  1.42it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 98ms/step
-  8%|▊         | 9/120 [00:22<01:00,  1.83it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 95ms/step
-  8%|▊         | 10/120 [00:22<00:48,  2.27it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
-  9%|▉         | 11/120 [00:22<00:37,  2.87it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
- 10%|█         | 12/120 [00:22<00:30,  3.51it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 93ms/step
- 11%|█         | 13/120 [00:22<00:27,  3.88it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 88ms/step
- 12%|█▏        | 14/120 [00:22<00:25,  4.16it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
- 12%|█▎        | 15/120 [00:23<00:23,  4.38it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 90ms/step
- 13%|█▎        | 16/120 [00:23<00:22,  4.55it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 88ms/step
- 14%|█▍        | 17/120 [00:23<00:21,  4.71it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 87ms/step
- 15%|█▌        | 18/120 [00:23<00:19,  5.33it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 87ms/step
- 16%|█▌        | 19/120 [00:23<00:19,  5.24it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 86ms/step
+# Load extracted features and labels
+features = np.load("/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_features.npy")
+labels = np.load("/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_labels.npy")
 
----
+# Split into train & test sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+
+# Train a Random Forest classifier
+classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+classifier.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = classifier.predict(X_test)
+
+# Compute Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Feature Extraction Accuracy using EfficientNetB7: {accuracy * 100:.2f}%")
+
+# Detailed Classification Report
+print("Classification Report:")
+print(classification_report(y_test, y_pred, target_names=["Bengin cases", "Malignant cases", "Normal cases"]))
+```
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Data
+categories = ["Bengin cases", "Malignant cases", "Normal cases"]
+precision = [1.00, 0.97, 0.79]
+recall = [0.24, 1.00, 0.98]
+f1_score = [0.39, 0.99, 0.87]
+accuracy = 89.09  # Feature Extraction Accuracy
+
+# -------- Plot 1: Accuracy Bar Chart --------
+plt.figure(figsize=(6, 4))
+plt.bar(['EfficientNetB7 Feature Extraction'], [accuracy], color='skyblue')
+plt.ylim(0, 100)
+plt.ylabel('Accuracy (%)')
+plt.title('Feature Extraction Accuracy')
+plt.show()
+
+# -------- Plot 2: Grouped Bar Chart for Precision, Recall, F1-score --------
+x = np.arange(len(categories))  # Label locations
+width = 0.2  # Bar width
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.bar(x - width, precision, width, label='Precision', color='blue')
+ax.bar(x, recall, width, label='Recall', color='orange')
+ax.bar(x + width, f1_score, width, label='F1-Score', color='green')
+
+ax.set_xlabel('Categories')
+ax.set_ylabel('Scores')
+ax.set_title('Classification Metrics Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(categories)
+ax.legend()
+plt.ylim(0, 1.1)
+plt.show()
+
+# -------- Plot 3: Line Chart for Trends --------
+plt.figure(figsize=(8, 5))
+plt.plot(categories, precision, marker='o', linestyle='-', label='Precision', color='blue')
+plt.plot(categories, recall, marker='o', linestyle='-', label='Recall', color='orange')
+plt.plot(categories, f1_score, marker='o', linestyle='-', label='F1-Score', color='green')
+
+plt.xlabel('Categories')
+plt.ylabel('Scores')
+plt.title('Trends of Classification Metrics')
+plt.legend()
+plt.ylim(0, 1.1)
+plt.grid(True)
+plt.show()
+
+# -------- Plot 4: Heatmap of Classification Report --------
+df = pd.DataFrame({
+    'Precision': precision,
+    'Recall': recall,
+    'F1-Score': f1_score
+}, index=categories)
+
+plt.figure(figsize=(7, 5))
+sns.heatmap(df, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title("Classification Report Heatmap")
+plt.show()
+```
+## Dataset training - LightGBM
+
+```python
+import os
+import numpy as np
+import lightgbm as lgb
+import matplotlib.pyplot as plt
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+#Define paths for extracted features & labels
+feature_data_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_features.npy"
+label_data_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data/lung_cancer_labels.npy"
+
+#Check if dataset files exist
+if not os.path.exists(feature_data_path) or not os.path.exists(label_data_path):
+    raise FileNotFoundError("Feature or Label file is missing! Please run feature extraction first.")
+
+#Load extracted features & labels
+features = np.load(feature_data_path)
+labels = np.load(label_data_path)
+
+#Ensure Labels are 1D
+print(f"Original Labels Shape: {labels.shape}")
+labels = labels.reshape(-1)  # Flatten to 1D if needed
+print(f"Reshaped Labels Shape: {labels.shape}")
+
+#Print unique labels to check for class imbalance
+unique_labels, label_counts = np.unique(labels, return_counts=True)
+print(f"Unique Labels: {unique_labels}")
+print(f"Label Counts: {label_counts}")
+
+#Split dataset into Train & Test
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42, stratify=labels)
+
+#Check dataset sizes after splitting
+print(f"Train set size: {X_train.shape[0]}, Test set size: {X_test.shape[0]}")
+print(f"Train labels size: {y_train.shape[0]}, Test labels size: {y_test.shape[0]}")
+
+#Train LightGBM Classifier with Optimized Parameters
+lgb_model = lgb.LGBMClassifier(
+    boosting_type="gbdt",
+    objective="multiclass",
+    num_class=len(np.unique(labels)),  # Auto-detect number of classes
+    metric="multi_logloss",
+    num_leaves=128,
+    learning_rate=0.02,
+    n_estimators=500,
+    max_depth=12,
+    subsample=0.85,
+    colsample_bytree=0.85,
+    reg_alpha=0.1,
+    reg_lambda=0.2,
+    class_weight="balanced",  # Helps with class imbalance
+    random_state=42
+)
+
+#Train Model
+print(" Training LightGBM Model...")
+lgb_model.fit(X_train, y_train)
+
+#Make Predictions
+y_train_pred = lgb_model.predict(X_train)
+y_test_pred = lgb_model.predict(X_test)
+
+#Ensure Predictions Shape Matches Test Labels
+assert y_test_pred.shape[0] == y_test.shape[0], f"Mismatch in predictions: y_test={y_test.shape[0]}, y_test_pred={y_test_pred.shape[0]}"
+
+#Evaluate Accuracy
+train_accuracy = accuracy_score(y_train, y_train_pred)
+test_accuracy = accuracy_score(y_test, y_test_pred)
+
+print(f"Training Accuracy: {train_accuracy:.4f}")
+print(f"Testing Accuracy: {test_accuracy:.4f}")
+
+#Save the Trained Model
+model_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data/Lung_Cancer_LGBM_Model.pkl"
+joblib.dump(lgb_model, model_path)
+print(f"Model saved at {model_path}!")
+
+#Load the model later for predictions
+loaded_model = joblib.load(model_path)
+y_pred = loaded_model.predict(X_test)
+
+#Feature Importance Visualization
+plt.figure(figsize=(12, 6))
+importances = lgb_model.feature_importances_
+plt.bar(range(len(importances)), importances, color="teal")
+plt.xlabel("Feature Index")
+plt.ylabel("Importance Score")
+plt.title("Feature Importance in LightGBM")
+plt.show()
+```
+## Model Evaluation & Accuracy Metrics
+```python
+import os
+import cv2
+import numpy as np
+import joblib
+import tensorflow as tf
+from tensorflow.keras.applications import EfficientNetB7
+from tensorflow.keras.applications.efficientnet import preprocess_input
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import GlobalAveragePooling2D
+
+#Load trained model
+lgb_model = joblib.load("/content/drive/MyDrive/Lung_Cancer_LGBM_Model.pkl")
+
+#Load EfficientNet-B7 for feature extraction
+base_model = EfficientNetB7(weights="imagenet", include_top=False)
+feature_extractor = Model(inputs=base_model.input, outputs=GlobalAveragePooling2D()(base_model.output))
+
+#Categories
+categories = ["Benign", "Malignant", "Normal"]
+img_size = 600  # EfficientNetB7 input size
+
+def extract_features(image_path):
+    img = cv2.imread(image_path)
+    if img is None:
+        return None
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.resize(img, (img_size, img_size))
+    img = preprocess_input(img)
+    img = np.expand_dims(img, axis=0)
+
+    #Extract feature vector
+    feature_vector = feature_extractor.predict(img)
+    return feature_vector.flatten()
+
+def predict_lung_cancer_from_folder(folder_path):
+    if not os.path.exists(folder_path):
+        print(" Error: Folder not found!")
+        return
+
+    for filename in os.listdir(folder_path):
+        image_path = os.path.join(folder_path, filename)
+        if os.path.isfile(image_path):
+            features = extract_features(image_path)
+            if features is None:
+                print(f" Error: Unable to process {filename}")
+                continue
+
+            prediction = lgb_model.predict([features])[0]
+            predicted_label = categories[prediction]
+
+            print(f" Image: {filename} | Prediction: {predicted_label}")
+
+#Test with a folder containing images
+test_folder = "/content/drive/MyDrive/Test Case"
+predict_lung_cancer_from_folder(test_folder)
+```
+
+```python
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+#Predict test set
+y_pred = lgb_model.predict(X_test)
+
+#Accuracy Score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\n LightGBM Model Accuracy: {accuracy * 100:.2f}%")
+
+#Classification Report
+print("\n Classification Report:")
+print(classification_report(y_test, y_pred, target_names=categories))
+
+#Confusion Matrix
+print("\n Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+```
+
+## Highlight Cancer-Affected Regions (Grad-CAM)
+
+```python
+import cv2
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from tensorflow.keras.applications import EfficientNetB7
+from tensorflow.keras.models import Model
+from tensorflow.keras.applications.efficientnet import preprocess_input
+from tensorflow.keras.layers import GlobalAveragePooling2D
+import tensorflow.keras.backend as K
+import joblib
+
+#  Load the Pre-trained LightGBM Model
+lgb_model_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data/Lung_Cancer_LGBM_Model.pkl"
+lgb_model = joblib.load(lgb_model_path)
+print(f"Loaded Model from {lgb_model_path}")
+
+# Load Pre-trained EfficientNetB7 for Feature Extraction
+base_model = EfficientNetB7(weights="imagenet", include_top=False, input_shape=(600, 600, 3))
+feature_extractor = Model(inputs=base_model.input, outputs=GlobalAveragePooling2D()(base_model.output))
+print(" EfficientNetB7 Loaded Successfully!")
+
+# Grad-CAM Function (Improved)
+def grad_cam(image_path):
+    # Load & Preprocess Image
+    img = cv2.imread(image_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.resize(img, (600, 600))  # EfficientNetB7 requires 600x600
+    img = preprocess_input(img)
+    img_tensor = np.expand_dims(img, axis=0)
+
+    # Convert to TensorFlow tensor
+    img_tensor = tf.convert_to_tensor(img_tensor, dtype=tf.float32)
+
+    # Feature Extraction for LightGBM
+    extracted_features = feature_extractor.predict(img_tensor).flatten().reshape(1, -1)
+
+    # Check Model Feature Dimension
+    if extracted_features.shape[1] != lgb_model.booster_.num_feature():
+        raise ValueError(
+            f"Feature mismatch: Model expects {lgb_model.booster_.num_feature()} features, but got {extracted_features.shape[1]}"
+        )
+
+    # Make Prediction using LightGBM
+    prediction_probabilities = lgb_model.predict_proba(extracted_features)[0]
+    predicted_class = np.argmax(prediction_probabilities)
+    confidence = prediction_probabilities[predicted_class] * 100  # Convert to percentage
+
+    # Grad-CAM Implementation
+    last_conv_layer = base_model.get_layer("block7a_project_conv")  # More relevant for lung region
+    grad_model = Model([base_model.input], [last_conv_layer.output, base_model.output])
+
+    with tf.GradientTape() as tape:
+        conv_outputs, predictions = grad_model(img_tensor)
+        class_score = predictions[:, predicted_class]  # Focus on predicted class activation
+
+    grads = tape.gradient(class_score, conv_outputs)
+    pooled_grads = K.mean(grads, axis=(0, 1, 2))
+
+    heatmap = np.mean(conv_outputs[0] * pooled_grads, axis=-1)
+    heatmap = np.maximum(heatmap, 0)  # Ensure only positive activations
+    heatmap /= np.max(heatmap)  # Normalize
+
+    # Smooth Heatmap using Gaussian Blur
+    heatmap = cv2.GaussianBlur(heatmap, (5, 5), sigmaX=2)
+
+    # Overlay Heatmap on Original Image
+    original_img = cv2.imread(image_path)
+    original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+    heatmap = cv2.resize(heatmap, (original_img.shape[1], original_img.shape[0]))
+    heatmap = np.uint8(255 * heatmap)
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    superimposed_img = cv2.addWeighted(original_img, 0.6, heatmap, 0.4, 0)
+
+    # Display Results
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.imshow(original_img)
+    plt.title("Original Image")
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(superimposed_img)
+    plt.title(f"Predicted: Class {predicted_class} ({confidence:.2f}%)")
+
+    plt.show()
+
+# Test on a Sample Image
+test_image_path = "/content/drive/MyDrive/Test Case/Testcase1.jpg"
+grad_cam(test_image_path)
+```
+## Performance Analysis
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc, precision_recall_curve
+
+#Given Confusion Matrix
+cm = np.array([[23, 0, 1],
+               [0, 113, 0],
+               [1, 0, 82]])
+
+#Class labels
+classes = ['Class 0', 'Class 1', 'Class 2']
+
+#Confusion Matrix Heatmap
+plt.figure(figsize=(6,5))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=classes, yticklabels=classes)
+plt.xlabel("Predicted Label")
+plt.ylabel("Actual Label")
+plt.title("Confusion Matrix Heatmap")
+plt.show()
+```
+
+```python
+#Classification Report
+y_true = np.array([0]*24 + [1]*113 + [2]*83)  # Ground Truth
+y_pred = np.array([0]*23 + [2] + [1]*113 + [2]*82 + [0])  # Predicted
+
+print("\nClassification Report:\n")
+print(classification_report(y_true, y_pred, target_names=classes))
+```
+```python
+# ROC Curve (One-vs-All Approach for Multi-Class)
+plt.figure(figsize=(6,5))
+for i in range(3):
+    y_true_binary = (y_true == i).astype(int)
+    y_score = (y_pred == i).astype(int)
+
+    fpr, tpr, _ = roc_curve(y_true_binary, y_score)
+    roc_auc = auc(fpr, tpr)
+
+    plt.plot(fpr, tpr, label=f"Class {i} (AUC = {roc_auc:.2f})")
+
+plt.plot([0, 1], [0, 1], 'k--')  # Diagonal line
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.legend()
+plt.show()
+```
+```python
+# Precision-Recall Curve
+plt.figure(figsize=(6,5))
+for i in range(3):
+    y_true_binary = (y_true == i).astype(int)
+    y_score = (y_pred == i).astype(int)
+
+    precision, recall, _ = precision_recall_curve(y_true_binary, y_score)
+    plt.plot(recall, precision, label=f"Class {i}")
+
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+plt.title("Precision-Recall Curve")
+plt.legend()
+plt.show()
+```
+## Log Loss & ROC Curve data
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import roc_curve, auc, log_loss
+
+# Compute Log Loss
+logloss = log_loss(y_test, lgb_model.predict_proba(X_test))
+
+# Compute ROC Curve and AUC
+y_probs = lgb_model.predict_proba(X_test)
+if y_probs.shape[1] == 2:  # Binary classification
+    fpr, tpr, _ = roc_curve(y_test, y_probs[:, 1])
+    roc_auc = auc(fpr, tpr)
+else:  # Multi-class classification (One-vs-Rest)
+    from sklearn.preprocessing import label_binarize
+    y_test_bin = label_binarize(y_test, classes=np.unique(y_test))
+    fpr, tpr, roc_auc = {}, {}, {}
+
+    for i in range(y_probs.shape[1]):
+        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_probs[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+# Create figure
+plt.figure(figsize=(12, 5))
+
+# Plot Log Loss as a single bar
+plt.subplot(1, 2, 1)
+sns.barplot(x=["Log Loss"], y=[logloss], palette="coolwarm", width=0.4)
+plt.ylabel("Log Loss")
+plt.ylim(0, logloss + 0.1)  # Ensures the bar is visible
+plt.title(f"📉 Log Loss: {logloss:.4f}")
+
+# Plot ROC Curve
+plt.subplot(1, 2, 2)
+if y_probs.shape[1] == 2:  # Binary classification
+    plt.plot(fpr, tpr, color="blue", lw=2, label=f"ROC curve (AUC = {roc_auc:.4f})")
+else:  # Multi-class classification
+    for i in range(y_probs.shape[1]):
+        plt.plot(fpr[i], tpr[i], lw=2, label=f"Class {i} (AUC = {roc_auc[i]:.4f})")
+
+plt.plot([0, 1], [0, 1], "k--", lw=1)
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC-AUC Curve")
+plt.legend(loc="lower right")
+
+# Show the plots
+plt.tight_layout()
+plt.show()
+```
+## Cross-Validation Mean Accuracy & Cross-Validation Std Dev
+```python
+from sklearn.model_selection import cross_val_score
+
+cv_scores = cross_val_score(lgb_model, X_train, y_train, cv=5, scoring="accuracy")
+print(f" Cross-Validation Mean Accuracy: {cv_scores.mean():.4f}")
+print(f" Cross-Validation Std Dev: {cv_scores.std():.4f}")
+```
+## Accuracy and Model performance camparison
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Model names and their accuracies
+models = ['CNN', 'VGG-16', 'ResNet-50', 'VGG-19', 'LightGBM']
+accuracies = [94.88, 94.07, 95.40, 92.59, 99.09]
+misclass_rates = [100 - acc for acc in accuracies]
+
+x = np.arange(len(models))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Accuracy bars
+acc_bars = ax.bar(x - width/2, accuracies, width, label='Accuracy (%)', color='skyblue')
+# Misclassification bars
+misclass_bars = ax.bar(x + width/2, misclass_rates, width, label='Misclassification Rate (%)', color='lightcoral')
+
+# Label formatting
+ax.set_ylabel('Percentage (%)')
+ax.set_title('Model Performance Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(models)
+ax.set_ylim(0, 110)
+ax.legend()
+
+# Add value labels on top of bars
+def add_labels(bars):
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{height:.2f}%',
+                    xy=(bar.get_x() + bar.get_width() / 2, height),
+                    xytext=(0, 3),  # offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
+add_labels(acc_bars)
+add_labels(misclass_bars)
+
+plt.tight_layout()
+plt.show()
+```
 
 
 
