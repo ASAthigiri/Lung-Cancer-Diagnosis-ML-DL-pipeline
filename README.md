@@ -6,7 +6,7 @@ Link: https://www.kaggle.com/datasets/hamdallak/the-iqothnccd-lung-cancer-datase
 
 # Mount drive:
 ```from google.colab import drive
-drive.mount('/content/drive')
+drive.mount('/content/drive')'''
 
 # Load Dataset:
 ```import os
