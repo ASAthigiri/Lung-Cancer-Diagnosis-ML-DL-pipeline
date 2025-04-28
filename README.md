@@ -480,7 +480,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import GlobalAveragePooling2D
 
 #Load trained model
-lgb_model = joblib.load("/content/drive/MyDrive/Lung_Cancer_LGBM_Model.pkl")
+lgb_model = joblib.load("/content/drive/MyDrive/Lung_Cancer_LGBM_Model.pkl")      -- test image
 
 #Load EfficientNet-B7 for feature extraction
 base_model = EfficientNetB7(weights="imagenet", include_top=False)
