@@ -32,3 +32,29 @@ from skimage.morphology import binary_closing, remove_small_objects, disk
 dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
 save_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data"
 os.makedirs(save_path, exist_ok=True)
+```
+
+```python
+categories = ["Bengin cases", "Malignant cases", "Normal cases"]
+img_size = 256
+
+# Image Preprocessing Function
+def preprocess_image(image_path):
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        return None, None
+
+    # Denoising
+    denoised_img = cv2.fastNlMeansDenoising(img, h=10, templateWindowSize=7, searchWindowSize=21)
+
+    # Segmentation
+    thresh = threshold_otsu(denoised_img)
+    binary_mask = denoised_img > thresh
+    binary_mask = binary_closing(binary_mask, disk(2))
+    binary_mask = remove_small_objects(binary_mask, min_size=500)
+    segmented_img = denoised_img * binary_mask
+
+    # Resizing
+    resized_img = cv2.resize(segmented_img, (img_size, img_size))
+    return resized_img, None  # Return image and label
+```
