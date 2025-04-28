@@ -814,7 +814,40 @@ add_labels(misclass_bars)
 plt.tight_layout()
 plt.show()
 ```
+```python
+import matplotlib.pyplot as plt
+import numpy as np
 
+# Models and their performance metrics
+models = ['CNN', 'VGG16', 'ResNet50', 'VGG19', 'LightGBM']
+specificity = [0.93, 0.96, 0.97, 0.92, 0.99]
+precision = [0.84, 0.81, 0.89, 0.79, 0.98]
+recall = [0.82, 0.79, 0.88, 0.76, 0.97]
+accuracy = [0.9488, 0.9407, 0.9540, 0.9259, 0.9909]
+
+# Bar width and positions
+bar_width = 0.2
+index = np.arange(len(models))
+
+# Plotting the grouped bar chart
+plt.figure(figsize=(10, 5))
+plt.bar(index, specificity, bar_width, label='Specificity', color='royalblue')
+plt.bar(index + bar_width, precision, bar_width, label='Precision', color='firebrick')
+plt.bar(index + 2 * bar_width, recall, bar_width, label='Recall', color='forestgreen')
+plt.bar(index + 3 * bar_width, accuracy, bar_width, label='Accuracy', color='mediumpurple')
+
+# Axis settings
+plt.xlabel('Models')
+plt.ylabel('Scores')
+plt.title('Performance Metrics by Model')
+plt.xticks(index + 1.5 * bar_width, models)
+plt.ylim(0, 1.05)
+plt.legend()
+plt.tight_layout()
+plt.grid(axis='y', linestyle='--', linewidth=0.5)
+
+plt.show()
+```
 
 
 
