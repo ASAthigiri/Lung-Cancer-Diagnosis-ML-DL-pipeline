@@ -58,3 +58,23 @@ def preprocess_image(image_path):
     resized_img = cv2.resize(segmented_img, (img_size, img_size))
     return resized_img, None  # Return image and label
 ```
+
+```python
+# Load Data in Parallel
+data, labels = [], []
+
+def process_category(category, class_num):
+    images, lbls = [], []
+    path = os.path.join(dataset_path, category)
+    image_files = glob.glob(os.path.join(path, "*.png"))  # Adjust extension if needed
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = executor.map(preprocess_image, image_files)
+
+    for img, lbl in results:
+        if img is not None:
+            images.append(img)
+            lbls.append(class_num)
+
+    return images, lbls
+```
