@@ -78,3 +78,31 @@ def process_category(category, class_num):
 
     return images, lbls
 ```
+
+```python
+# Run Parallel Processing
+for idx, category in enumerate(categories):
+    cat_data, cat_labels = process_category(category, idx)
+    data.extend(cat_data)
+    labels.extend(cat_labels)
+
+# Convert to NumPy Arrays
+data = np.array(data, dtype=np.float32).reshape(-1, img_size, img_size, 1) / 255.0
+labels = np.array(labels, dtype=np.int32)
+
+# Save Processed Data to Drive
+np.save(os.path.join(save_path, "lung_cancer_data.npy"), data)
+np.save(os.path.join(save_path, "lung_cancer_labels.npy"), labels)
+
+print("Dataset Loaded and Saved Successfully!")
+```
+
+```yml
+---
+
+🔵 **Explanation:**
+- First code block = your Python code (`python`)
+- Then write a heading like "Output:"
+- Second code block = your result/output (`bash` or no language)
+
+---
