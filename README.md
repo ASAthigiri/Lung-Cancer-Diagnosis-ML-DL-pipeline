@@ -97,7 +97,7 @@ np.save(os.path.join(save_path, "lung_cancer_labels.npy"), labels)
 print("Dataset Loaded and Saved Successfully!")
 ```
 
-```yml
+
 ---
 
 🔵 **Explanation:**
