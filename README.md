@@ -5,10 +5,11 @@ Hybrid approach to find the lung cancer using CT and MRI Scan
 Link: https://www.kaggle.com/datasets/hamdallak/the-iqothnccd-lung-cancer-dataset?resource=download
 
 ### Mount drive:
-```from google.colab import drive
-drive.mount('/content/drive')'''
-
-# Load Dataset:
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+### Load Dataset:
 ```import os
 dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
 if os.path.exists(dataset_path):
