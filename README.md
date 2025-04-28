@@ -215,10 +215,127 @@ normal_images = check_images("Normal cases")
 🔵 **Result:**
 - Found 120 files in Bengin cases
 Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
-Found 561 files in Malignant cases
+- Found 561 files in Malignant cases
 Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
-Found 416 files in Normal cases
+- Found 416 files in Normal cases
 Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
+
+---
+
+```python
+import glob
+
+image_files = []
+for ext in ["*.png", "*.jpg", "*.jpeg", "*.bmp"]:
+    image_files.extend(glob.glob(os.path.join(dataset_path, "**", ext), recursive=True))
+
+print(f"🖼️ Found {len(image_files)} images.")
+```
+---
+
+🔵 **Result:**
+- Found 1097 images.
+
+---
+
+## Feature Extraction using EfficientNet-B7
+```python
+import os
+import cv2
+import numpy as np
+import glob
+import tensorflow as tf
+from tensorflow.keras.applications import EfficientNetB7
+from tensorflow.keras.applications.efficientnet import preprocess_input
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import GlobalAveragePooling2D
+from tqdm import tqdm  # For progress tracking
+
+#Load Pretrained EfficientNet-B7
+base_model = EfficientNetB7(weights="imagenet", include_top=False)
+model = Model(inputs=base_model.input, outputs=GlobalAveragePooling2D()(base_model.output))
+
+#Define dataset path and categories
+dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
+categories = ["Bengin cases", "Malignant cases", "Normal cases"]
+img_size = 600  # EfficientNetB7 input size
+
+#Initialize storage for features and labels
+features = []
+labels = []
+
+#Function to preprocess images
+def preprocess_image(image_path):
+    img = cv2.imread(image_path)  # Load image
+    if img is None:
+        return None
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
+    img = cv2.resize(img, (img_size, img_size))  # Resize to 600x600 (EfficientNet-B7 input size)
+    img = preprocess_input(img)  # Normalize using EfficientNet preprocessing
+    return img
+
+#Extract features for each category
+for label, category in enumerate(categories):
+    category_path = os.path.join(dataset_path, category)
+    image_files = glob.glob(os.path.join(category_path, "*.*"))  # Supports .png, .jpg, etc.
+
+    print(f"Processing {len(image_files)} images from {category}...")
+
+    for image_path in tqdm(image_files):
+        img = preprocess_image(image_path)
+        if img is not None:
+            img = np.expand_dims(img, axis=0)  # Add batch dimension
+            feature_vector = model.predict(img)  # Extract features
+            features.append(feature_vector.flatten())  # Store flattened feature vector
+            labels.append(label)  # Store corresponding label
+
+#Convert lists to NumPy arrays
+features = np.array(features)
+labels = np.array(labels)
+
+print("Feature extraction completed!")
+print(f"Features shape: {features.shape}")
+print(f"Labels shape: {labels.shape}")
+
+plt.figure(figsize=(12, 6))
+importances = lgb_model.feature_importances_
+plt.bar(range(len(importances)), importances, color="teal")
+plt.xlabel("Feature Index")
+plt.ylabel("Importance Score")
+plt.title("Feature Importance in LightGBM")
+plt.show()
+
+#Save extracted features for later use
+np.save("/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_features.npy", features)
+np.save("/content/drive/MyDrive/Processed_Lung_Cancer_Data/EfficientNetB7_labels.npy", labels)
+np.save("/content/drive/MyDrive/Processed_Lung_Cancer_Data/lung_cancer_labels.npy", labels)
+```
+
+---
+
+🔵 **Result:**
+- Processing 120 images from Bengin cases...
+  0%|          | 0/120 [00:00<?, ?it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 14s 14s/step
+  1%|          | 1/120 [00:20<40:42, 20.53s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 114ms/step
+  2%|▏         | 2/120 [00:20<17:00,  8.65s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 116ms/step
+  2%|▎         | 3/120 [00:21<09:20,  4.79s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 111ms/step
+  3%|▎         | 4/120 [00:21<05:45,  2.98s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 113ms/step
+  4%|▍         | 5/120 [00:21<03:45,  1.96s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 111ms/step
+  5%|▌         | 6/120 [00:21<02:33,  1.35s/it]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 106ms/step
+  6%|▌         | 7/120 [00:21<01:49,  1.03it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
+  7%|▋         | 8/120 [00:21<01:19,  1.42it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 98ms/step
+  8%|▊         | 9/120 [00:22<01:00,  1.83it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 95ms/step
+  8%|▊         | 10/120 [00:22<00:48,  2.27it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
+  9%|▉         | 11/120 [00:22<00:37,  2.87it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
+ 10%|█         | 12/120 [00:22<00:30,  3.51it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 93ms/step
+ 11%|█         | 13/120 [00:22<00:27,  3.88it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 88ms/step
+ 12%|█▏        | 14/120 [00:22<00:25,  4.16it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 94ms/step
+ 12%|█▎        | 15/120 [00:23<00:23,  4.38it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 90ms/step
+ 13%|█▎        | 16/120 [00:23<00:22,  4.55it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 88ms/step
+ 14%|█▍        | 17/120 [00:23<00:21,  4.71it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 87ms/step
+ 15%|█▌        | 18/120 [00:23<00:19,  5.33it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 87ms/step
+ 16%|█▌        | 19/120 [00:23<00:19,  5.24it/s]1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 86ms/step
 
 ---
 
