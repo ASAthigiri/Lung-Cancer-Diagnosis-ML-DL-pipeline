@@ -18,3 +18,17 @@ if os.path.exists(dataset_path):
 else:
     print("Dataset path NOT found. Check the path.")
 ```
+## Preprocessing
+```python
+import os
+import numpy as np
+import cv2
+import glob
+import concurrent.futures
+from skimage.filters import threshold_otsu
+from skimage.morphology import binary_closing, remove_small_objects, disk
+
+# Define Paths
+dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
+save_path = "/content/drive/MyDrive/Processed_Lung_Cancer_Data"
+os.makedirs(save_path, exist_ok=True)
