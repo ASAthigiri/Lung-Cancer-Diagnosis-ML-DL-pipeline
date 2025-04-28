@@ -105,7 +105,7 @@ print("Dataset Loaded and Saved Successfully!")
 
 ---
 
-# Preprocessing: Contrast Enhancement and Data Augmentation
+## Preprocessing: Contrast Enhancement and Data Augmentation
 
 ```python
 import os
@@ -182,7 +182,45 @@ if __name__ == "__main__":
     main()
 ```
 
+---
 
+🔵 **Result:**
+- Contrast Enhancement and Data Augmentation Completed Successfully!
+
+---
+
+## Count the files in each category
+```python
+import os
+import glob
+# Define dataset path
+dataset_path = "/content/drive/MyDrive/Dataset-Lungcancer/The IQ-OTHNCCD lung cancer dataset"
+
+# Function to check files in a category
+def check_images(category):
+    category_path = os.path.join(dataset_path, category)
+    image_files = glob.glob(os.path.join(category_path, "*.*"))  # Match any file type
+    print(f"Found {len(image_files)} files in {category}")
+    print("Sample files:", image_files[:5])  # Print first 5 file names
+    return image_files
+
+# Check all categories
+benign_images = check_images("Bengin cases")
+malignant_images = check_images("Malignant cases")
+normal_images = check_images("Normal cases")
+```
+
+---
+
+🔵 **Result:**
+- Found 120 files in Bengin cases
+Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
+Found 561 files in Malignant cases
+Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
+Found 416 files in Normal cases
+Sample files: ['/content/drive/MyDrive/Dataset-Lungcancer....
+
+---
 
 
 
